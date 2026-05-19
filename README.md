@@ -38,7 +38,7 @@ During the execution of the notebooks, this structure is reorganized into a stan
 
 ## Implementation Comparison
 
-Two implementations were developed to optimize performance and resource utilization. Below is a comparison of the key differences and their impact on the results.
+Three implementations were developed to optimize performance, resource utilization, and visualization. Below is a comparison of the key differences and their impact on the results.
 
 ### Version 1: Initial Implementation
 **File:** `electrofault-detector-using-yolov8.ipynb`
@@ -58,23 +58,32 @@ Two implementations were developed to optimize performance and resource utilizat
 - **Class Mapping:** Improved class naming based on confirmed fault categories.
 - **Performance:** Optimized for VRAM constraints while maintaining high detection accuracy.
 
+### Version 3: Final Implementation with Visualizations
+**File:** `electrofault-detector-using-yolov8-v3.ipynb`
+
+- **Input Resolution:** Standardized at 640px.
+- **Batch Size:** 8.
+- **Visualizations:** Extensive EDA including class distribution bar charts, and visualization of sample images with ground-truth bounding boxes.
+- **Evaluation:** Evaluated on validation and test sets and plots training learning curves on a single 2x3 grid. Plots predictions for test images directly in the notebook.
+- **Summary:** Outputs a heavily formatted final summary table summarizing dataset structure, parameters, and final metrics for the model.
+
 ## Comparative Analysis
 
-| Feature | Version 1 | Version 2 |
-| :--- | :--- | :--- |
-| **Model** | YOLOv8l | YOLOv8l |
-| **Image Size (Train)** | 896 | 640 |
-| **Image Size (Val)** | 896 | 640 |
-| **Batch Size** | 16 | 8 |
-| **Resilience** | Basic | High (Handles case-sensitive extensions) |
-| **Naming** | Generic | Descriptive |
+| Feature | Version 1 | Version 2 | Version 3 |
+| :--- | :--- | :--- | :--- |
+| **Model** | YOLOv8l | YOLOv8l | YOLOv8l |
+| **Image Size (Train)** | 896 | 640 | 640 |
+| **Image Size (Val)** | 896 | 640 | 640 |
+| **Batch Size** | 16 | 8 | 8 |
+| **Visualizations** | None | None | Comprehensive EDA and Training/Eval plots |
+| **Naming** | Generic | Descriptive | Descriptive |
 
-### Key Improvements in Version 2
+### Key Improvements in Version 3
 
-1. **Resolution Consistency:** Version 1 used 896px for training but 640px for test inference. Version 2 standardizes at 640px across all splits, leading to more reliable and interpretable metrics.
-2. **Resource Management:** Version 1 used a higher batch size (16) which often triggers VRAM warnings or OOM errors on standard cloud environments. Version 2 reduces this to 8 for stability.
-3. **Data Handling:** Version 2 includes a more comprehensive globbing function that captures both lower-case and upper-case image extensions, ensuring no data is skipped during the structured copy process.
-4. **Metadata Accuracy:** The labeling in Version 2 was refined to reflect the actual electrical fault types discovered in the dataset annotations.
+1. **Exploratory Data Analysis (EDA):** Added visual distribution of class categories and plotted sample images with their ground-truth bounding boxes.
+2. **Metrics Visualization:** Consolidated training metric plots directly in the notebook to easily monitor losses and mAP curves over time.
+3. **Inference Viewing:** Evaluates a sample of test images and displays the bounding box predictions directly in the output.
+4. **Structured Results:** Displays a comprehensive Final Summary log at the end of the notebook.
 
 ## Usage
 
