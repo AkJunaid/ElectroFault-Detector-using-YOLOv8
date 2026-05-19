@@ -1,2 +1,4 @@
 Bangladesh-National-Building-Code-2020.pdf
-"Predictive Maintenance for Electrical Wiring Faults/"
+# Ignore the entire dataset directory and all nested contents
+**/Predictive Maintenance for Electrical Wiring Faults/
+**/Predictive Maintenance for Electrical Wiring Faults/**
