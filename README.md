@@ -1,6 +1,6 @@
 # Electrical Wiring Fault Detection using YOLOv8
 
-This repository contains two versions of a YOLOv8-based model for detecting electrical wiring faults. The project aims to identify various fault types such as burnt wires, short circuits, overloaded components, and disconnected wires to facilitate predictive maintenance.
+This repository contains three versions of a YOLOv8-based model for detecting electrical wiring faults. The project aims to identify various fault types such as burnt wires, short circuits, overloaded components, and disconnected wires to facilitate predictive maintenance.
 
 ## Project Overview
 
@@ -93,6 +93,30 @@ To run the detector:
 3. Run the "Build YOLO Dataset Structure" cell to organize files.
 4. Execute the training cell.
 
-## Results
+## Results & Performance Metrics
 
-Both models demonstrate high precision in detecting electrical faults. Version 2 is recommended for deployment due to its standardized resolution and better resource efficiency.
+Below is the quantitative comparison of the models trained across the three versions:
+
+### Validation Set Performance
+
+| Metric | Version 1 (YOLOv8s) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) |
+| :--- | :--- | :--- | :--- |
+| **mAP@0.5** | 0.4560 | 0.6992 | 0.6992 |
+| **mAP@0.5:0.95** | 0.2364 | 0.4225 | 0.4225 |
+| **Precision** | 0.6642 | 0.8369 | 0.8369 |
+| **Recall** | 0.4421 | 0.6502 | 0.6502 |
+
+### Test Set Performance
+
+| Metric | Version 1 (YOLOv8s) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) |
+| :--- | :--- | :--- | :--- |
+| **mAP@0.5** | 0.4651 | 0.6596 | 0.6596 |
+| **mAP@0.5:0.95** | 0.2436 | 0.3893 | 0.3893 |
+| **Precision** | 0.7169 | 0.8628 | 0.8628 |
+| **Recall** | 0.4469 | 0.6108 | 0.6108 |
+
+### Best Accuracy Conclusion
+
+**Versions 2 and 3** (both using the YOLOv8l architecture with standard 640x640 resolution) achieved the **best overall accuracy**. Switching from YOLOv8s (Version 1) to the larger YOLOv8l model drastically improved the average precision across all faults. 
+
+On the test set, Version 2/3 achieved a **mAP@0.5 of 0.6596** (a nearly +0.20 improvement over Version 1) and a **Precision of 0.8628** (a +0.14 improvement), meaning it is significantly more reliable at precisely localizing and identifying specific electrical fault types. **Version 3** is highly recommended as the final reference due to its identical top-tier performance paired with comprehensive data and inference visualizations.
