@@ -92,6 +92,49 @@ Four implementations were developed to optimize performance, resource utilizatio
 2. **Confidence Threshold Optimization:** Programmatically calculates and plots the threshold yielding the best F1 Score, ensuring the deployed model strikes the truest balance between Precision and Recall.
 3. **Hyperparameter Hardening:** Adjusts label smoothing, learning rate schedules, and mosaic/copy-paste operations pushing localization accuracy higher.
 
+## Version 4 — Final Run (v4) Summary
+
+This section summarizes the final training and evaluation run from `electrofault-detector-using-yolov8-v4.ipynb` (model name: `wiring_fault_yolov8l_v3`). Key configuration and results from the run are listed below.
+
+- **Model:** YOLOv8l (`wiring_fault_yolov8l_v3`)
+- **Checkpoint (best weights):** `/kaggle/working/wiring_fault_yolov8l_v3/weights/best.pt`
+- **Classes (nc = 5):** Normal, Burnt, Short_Circuit, Overloaded, Disconnected
+- **Image size:** 640x640
+- **Batch size:** 8
+- **Max epochs:** 150 (patience=40)
+- **label_smoothing:** 0.1
+- **cls loss weight:** 1.5
+- **copy_paste:** 0.5
+- **cos_lr:** True
+- **Best confidence threshold (best F1):** 0.40
+
+### Validation (conf=0.25)
+
+- mAP@0.5: **0.7026**
+- mAP@0.5:0.95: **0.4072**
+- Precision: **0.8906**
+- Recall: **0.6890**
+
+### Test (conf=0.25)
+
+- mAP@0.5: **0.7009**
+- mAP@0.5:0.95: **0.3873**
+- Precision: **0.8700**
+- Recall: **0.6691**
+
+### Best F1 @ conf=0.40
+
+- Precision: **0.8756**
+- Recall: **0.6691**
+- F1 Score: **0.7585**
+- mAP@0.5 (at conf=0.40): **0.6610**
+
+**Notes:**
+
+- Results and artifacts saved to: `/kaggle/working/wiring_fault_yolov8l_v3`
+- Sample predictions saved to: `/kaggle/working/predictions_v3`
+- Reproduce the run using `electrofault-detector-using-yolov8-v4.ipynb` (follow the notebook cells in order).
+
 ## Usage
 
 To run the detector:
@@ -108,19 +151,19 @@ Below is the quantitative comparison of the models trained across the versions. 
 
 | Metric | Version 1 (YOLO8l) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) | Version 4 (YOLOv8l) |
 | :--- | :--- | :--- | :--- | :--- |
-| **mAP@0.5** | 0.4560 | 0.6992 | 0.6992 | *Pending* |
-| **mAP@0.5:0.95** | 0.2364 | 0.4225 | 0.4225 | *Pending* |
-| **Precision** | 0.6642 | 0.8369 | 0.8369 | *Pending* |
-| **Recall** | 0.4421 | 0.6502 | 0.6502 | *Pending* |
+| **mAP@0.5** | 0.4560 | 0.6992 | 0.6992 | 0.7026 |
+| **mAP@0.5:0.95** | 0.2364 | 0.4225 | 0.4225 | 0.4072 |
+| **Precision** | 0.6642 | 0.8369 | 0.8369 | 0.8906 |
+| **Recall** | 0.4421 | 0.6502 | 0.6502 | 0.6890 |
 
 ### Test Set Performance
 
 | Metric | Version 1 (YOLO8l) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) | Version 4 (YOLOv8l) |
 | :--- | :--- | :--- | :--- | :--- |
-| **mAP@0.5** | 0.4651 | 0.6596 | 0.6596 | *Pending* |
-| **mAP@0.5:0.95** | 0.2436 | 0.3893 | 0.3893 | *Pending* |
-| **Precision** | 0.7169 | 0.8628 | 0.8628 | *Pending* |
-| **Recall** | 0.4469 | 0.6108 | 0.6108 | *Pending* |
+| **mAP@0.5** | 0.4651 | 0.6596 | 0.6596 | 0.7009 |
+| **mAP@0.5:0.95** | 0.2436 | 0.3893 | 0.3893 | 0.3873 |
+| **Precision** | 0.7169 | 0.8628 | 0.8628 | 0.8700 |
+| **Recall** | 0.4469 | 0.6108 | 0.6108 | 0.6691 |
 
 ### Best Accuracy Conclusion
 
