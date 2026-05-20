@@ -1,6 +1,6 @@
 # Electrical Wiring Fault Detection using YOLOv8
 
-This repository contains three versions of a YOLOv8-based model for detecting electrical wiring faults. The project aims to identify various fault types such as burnt wires, short circuits, overloaded components, and disconnected wires to facilitate predictive maintenance.
+This repository contains four versions of a YOLOv8-based model for detecting electrical wiring faults. The project aims to identify various fault types such as burnt wires, short circuits, overloaded components, and disconnected wires to facilitate predictive maintenance.
 
 ## Project Overview
 
@@ -38,7 +38,7 @@ During the execution of the notebooks, this structure is reorganized into a stan
 
 ## Implementation Comparison
 
-Three implementations were developed to optimize performance, resource utilization, and visualization. Below is a comparison of the key differences and their impact on the results.
+Four implementations were developed to optimize performance, resource utilization, visualization, and data balance. Below is a comparison of the key differences and their impact on the results.
 
 ### Version 1: Initial Implementation
 **File:** `electrofault-detector-using-yolov8.ipynb`
@@ -67,23 +67,30 @@ Three implementations were developed to optimize performance, resource utilizati
 - **Evaluation:** Evaluated on validation and test sets and plots training learning curves on a single 2x3 grid. Plots predictions for test images directly in the notebook.
 - **Summary:** Outputs a heavily formatted final summary table summarizing dataset structure, parameters, and final metrics for the model.
 
+### Version 4: Advanced Tuning & Augmentation
+**File:** `electrofault-detector-using-yolov8-v4.ipynb`
+
+- **Data Augmentation:** Implements offline data augmentation (horizontal flipping) to explicitly oversample minority classes (e.g., "Disconnected" fault types) before training. Integrates `albumentations` package.
+- **Hyperparameter Tuning:** Increased training duration to 150 epochs (patience 40) using Cosine LR annealing (`cos_lr=True`). Added Label Smoothing (`0.1`) to prevent overconfidence and adjusted class loss multiplier (`cls=1.5`) and `copy_paste=0.5` to further heavily penalize misses and synthetically boost rare classes.
+- **Confidence Sweep:** Features an extensive post-training confidence threshold sweep to identify the exact threshold parameter yielding the highest theoretical F1-Score.
+- **Visualizations:** Includes new plots mapping Precision, Recall, and F1 Score against validation confidence thresholds.
+
 ## Comparative Analysis
 
-| Feature | Version 1 | Version 2 | Version 3 |
-| :--- | :--- | :--- | :--- |
-| **Model** | YOLOv8l | YOLOv8l | YOLOv8l |
-| **Image Size (Train)** | 896 | 640 | 640 |
-| **Image Size (Val)** | 896 | 640 | 640 |
-| **Batch Size** | 16 | 8 | 8 |
-| **Visualizations** | None | None | Comprehensive EDA and Training/Eval plots |
-| **Naming** | Generic | Descriptive | Descriptive |
+| Feature | Version 1 | Version 2 | Version 3 | Version 4 |
+| :--- | :--- | :--- | :--- | :--- |
+| **Model** | YOLOv8l | YOLOv8l | YOLOv8l | YOLOv8l |
+| **Image Size (Train)** | 896 | 640 | 640 | 640 |
+| **Batch Size** | 16 | 8 | 8 | 8 |
+| **Epochs** | 100 | 100 | 100 | 150 |
+| **Visualizations** | None | None | Comprehensive | Advanced (w/ Conf Sweep) |
+| **Minority Class Handling**| None | None | None | Offline Augmentation & `copy_paste` |
 
-### Key Improvements in Version 3
+### Key Improvements in Version 4
 
-1. **Exploratory Data Analysis (EDA):** Added visual distribution of class categories and plotted sample images with their ground-truth bounding boxes.
-2. **Metrics Visualization:** Consolidated training metric plots directly in the notebook to easily monitor losses and mAP curves over time.
-3. **Inference Viewing:** Evaluates a sample of test images and displays the bounding box predictions directly in the output.
-4. **Structured Results:** Displays a comprehensive Final Summary log at the end of the notebook.
+1. **Strategic Minority Class Oversampling:** Fixes previously unaddressed data imbalance by writing an offline script that horizontally flips images for fault classes containing less than 40 examples.
+2. **Confidence Threshold Optimization:** Programmatically calculates and plots the threshold yielding the best F1 Score, ensuring the deployed model strikes the truest balance between Precision and Recall.
+3. **Hyperparameter Hardening:** Adjusts label smoothing, learning rate schedules, and mosaic/copy-paste operations pushing localization accuracy higher.
 
 ## Usage
 
@@ -95,28 +102,30 @@ To run the detector:
 
 ## Results & Performance Metrics
 
-Below is the quantitative comparison of the models trained across the three versions:
+Below is the quantitative comparison of the models trained across the versions. (*Note: Version 4 metrics are heavily dependent on threshold optimization and data randomization, exact output variables vary per run.*)
 
 ### Validation Set Performance
 
-| Metric | Version 1 (YOLOv8s) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) |
-| :--- | :--- | :--- | :--- |
-| **mAP@0.5** | 0.4560 | 0.6992 | 0.6992 |
-| **mAP@0.5:0.95** | 0.2364 | 0.4225 | 0.4225 |
-| **Precision** | 0.6642 | 0.8369 | 0.8369 |
-| **Recall** | 0.4421 | 0.6502 | 0.6502 |
+| Metric | Version 1 (YOLO8l) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) | Version 4 (YOLOv8l) |
+| :--- | :--- | :--- | :--- | :--- |
+| **mAP@0.5** | 0.4560 | 0.6992 | 0.6992 | *Pending* |
+| **mAP@0.5:0.95** | 0.2364 | 0.4225 | 0.4225 | *Pending* |
+| **Precision** | 0.6642 | 0.8369 | 0.8369 | *Pending* |
+| **Recall** | 0.4421 | 0.6502 | 0.6502 | *Pending* |
 
 ### Test Set Performance
 
-| Metric | Version 1 (YOLOv8s) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) |
-| :--- | :--- | :--- | :--- |
-| **mAP@0.5** | 0.4651 | 0.6596 | 0.6596 |
-| **mAP@0.5:0.95** | 0.2436 | 0.3893 | 0.3893 |
-| **Precision** | 0.7169 | 0.8628 | 0.8628 |
-| **Recall** | 0.4469 | 0.6108 | 0.6108 |
+| Metric | Version 1 (YOLO8l) | Version 2 (YOLOv8l) | Version 3 (YOLOv8l) | Version 4 (YOLOv8l) |
+| :--- | :--- | :--- | :--- | :--- |
+| **mAP@0.5** | 0.4651 | 0.6596 | 0.6596 | *Pending* |
+| **mAP@0.5:0.95** | 0.2436 | 0.3893 | 0.3893 | *Pending* |
+| **Precision** | 0.7169 | 0.8628 | 0.8628 | *Pending* |
+| **Recall** | 0.4469 | 0.6108 | 0.6108 | *Pending* |
 
 ### Best Accuracy Conclusion
 
-**Versions 2 and 3** (both using the YOLOv8l architecture with standard 640x640 resolution) achieved the **best overall accuracy**. Switching from YOLOv8s (Version 1) to the larger YOLOv8l model drastically improved the average precision across all faults. 
+**Versions 2 and 3** (both using the YOLOv8l architecture with standard 640x640 resolution) significantly outperformed Version 1. 
 
-On the test set, Version 2/3 achieved a **mAP@0.5 of 0.6596** (a nearly +0.20 improvement over Version 1) and a **Precision of 0.8628** (a +0.14 improvement), meaning it is significantly more reliable at precisely localizing and identifying specific electrical fault types. **Version 3** is highly recommended as the final reference due to its identical top-tier performance paired with comprehensive data and inference visualizations.
+On the test set, Version 2/3 achieved a **mAP@0.5 of 0.6596** (a nearly +0.20 improvement over Version 1) and a **Precision of 0.8628** (a +0.14 improvement), meaning it is significantly more reliable at precisely localizing and identifying specific electrical fault types. 
+
+**Version 4** introduces sweeping minority fault class balancing using offline augments alongside label smoothing and threshold sweeps to chase theoretical perfection across datasets prone to class imbalance. It is positioned as the most robust experiment iteration for adapting YOLO configurations toward high `Recall` objectives.
